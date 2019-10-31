@@ -8,7 +8,7 @@
 				<input type='text' v-model='username' style="width: 200px;"><br>
 				Kommentar:<br>
 				<textarea type='text' v-model='comment'></textarea><br>
-				<button @click='addRecord();'>Speichern</button>			
+				<input type='button' value="Speichern" @click='addRecord();'>			
 					
 			</form>			
 			<div>			
@@ -42,13 +42,13 @@ export default {
   axios.post('http://localhost:8080/Guestbook/php/ajaxController.php', {
     request: 'add',
 		username: this.username,
-		comment: this.comment
+    comment: this.comment
   })
-  .then(() => {
+  .then(response => {
     this.allRecords();
 		this.username = '';
     this.comment = '';
-    this.message = '';
+    this.message = response.data;
   })
   }
   else

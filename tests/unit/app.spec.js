@@ -2,16 +2,16 @@
 // use any test runner / assertion library combo you prefer
 // use npm run test:unit in the root 
 
-import { shallowMount } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
-import Vue from 'vue'
+import axios from 'axios';
 import App from '@/App.vue'
 
 describe('App', () => {
   
+  //unit testing 
   it('button click Fill all fields', () => {
     const wrapper = mount(App)
-    const button = wrapper.find('button')
+    const button = wrapper.findAll('input').at(1)
     button.trigger('click')
     expect(wrapper.vm.message).toBe('Fill all fields')
   })
@@ -21,6 +21,16 @@ describe('App', () => {
     const wrapper = mount(App)
     expect(typeof App.created).toBe('function')
   })
+    //Formular Felder danach leeren
+    it('Formular Felder leeren', () => {
+      const wrapper = mount(App)
+      wrapper.vm.username = 'tester'
+      wrapper.vm.comment = 'test'
+      const button = wrapper.findAll('input').at(1)
+      button.trigger('click')
+      expect(wrapper.vm.username).toBe('')
+      expect(wrapper.vm.comment).toBe('')
+    })
   
   // the raw component options
   it('sets the correct default data', () => {
@@ -31,25 +41,34 @@ describe('App', () => {
     expect(defaultData.comment).toBe('')
     expect(defaultData.message).toBe('')
   })
+  
+  //integration test
+
   //neuen Datensatz in die gesamte Liste ganz oben dynamisch hinzufügen
   it('neuen Datensatz in die gesamte Liste ganz oben dynamisch hinzufügen', () => {
     const wrapper = mount(App)
     wrapper.vm.username = 'tester'
     wrapper.vm.comment = 'test'
-    wrapper.vm.addRecord()
-    const wrapperArray = wrapper.findAll('.user')
+    const button = wrapper.findAll('input').at(1)
+    button.trigger('click')
+    const wrapperArray = wrapper.findAll('h4').at(1)
     expect(wrapperArray).toContain('tester')
 
   })
-  
-  //Formular Felder danach leeren
-  it('Formular Felder leeren', () => {
+
+  // create user 2 times and check message
+  it('button click user already exists', () => {
+
     const wrapper = mount(App)
-    wrapper.vm.username = 'tester'
-    wrapper.vm.comment = 'test'
-    wrapper.vm.addRecord()
-    expect(wrapper.vm.username).toBe('')
-    expect(wrapper.vm.comment).toBe('')
+    var i;
+    for ( i = 0; i < 3; i++) {
+      wrapper.vm.username = 'tester'
+      wrapper.vm.comment = 'test'
+      const button = wrapper.findAll('input').at(1)
+      button.trigger('click')
+    }
+    expect(wrapper.vm.message).toBe('Username already exists')
   })
+
 
 })

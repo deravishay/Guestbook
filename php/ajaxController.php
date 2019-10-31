@@ -17,7 +17,7 @@ function getAllFromDb($con)
 	    $response[] = $row;
 	}
 	echo json_encode($response);
-	return true;
+	exit;
 }
 
 function addTodb($con,$username,$comment)
@@ -26,11 +26,12 @@ function addTodb($con,$username,$comment)
 	// user doesnt exist
 	if(mysqli_num_rows($userData) == 0){
 		mysqli_query($con,"INSERT INTO users(username,comment) VALUES('".$username."','".$comment."')");
-		echo "Add record";
+		$response = "Add record";
 	}else{
-		echo "Username already exists.";
+		$response = "Username already exists";
 	}
-	return true;
+	echo json_encode($response);
+	exit;
 }
 
 // Fetch All records
